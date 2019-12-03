@@ -1,0 +1,24 @@
+---
+- name: Generate the amq broker config
+  template:
+    src: "{{ ar_osc_amqbroker_xml_template }}"
+    dest: "{{ ar_osc_amqbroker_xml_file }}"
+
+- set_fact:
+    BROKER_XML: "{{ lookup('file', ar_osc_amqbroker_xml_file) }}"
+
+- name: Generate broker xml config map
+  template:
+    src: amq-broker-cm.yml.j2
+    dest: "{{ ar_osc_amqbroker_config_dest }}/amq-broker-cm.yml"
+
+- name: Generate the amq broker nodeport service config
+  template:
+    src: amq-broker-nodeport-service.yml.j2
+    dest: "{{ ar_osc_amqbroker_config_dest }}/amq-broker-nodeport-service.yml"
+  when: ar_osc_amqbroker_instance.broker_node_port is defined
+
+- name: Copy AMQ Broker template to working area
+  copy:
+    src: "{{ ar_osc_amqbroker_k8s_template }}"
+    dest: "{{ ar_osc_amqbroker_config_dest }}/amq-broker-k8s-template.yml"

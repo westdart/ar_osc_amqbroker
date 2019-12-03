@@ -1,0 +1,35 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: amq-broker-node-port
+  app: {{ ar_osc_amqbroker_name }}
+metadata:
+  annotations:
+    description: Service exposing a node-port for AMQ Broker
+    iconClass: icon-amq
+    openshift.io/display-name: AMQ Broker NodePort Service
+  labels:
+    app: {{ ar_osc_amqbroker_name }}
+  name: {{ ar_osc_amqbroker_instance | broker_application_name }}-np-svc
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ ar_osc_amqbroker_name }}
+    name: {{ ar_osc_amqbroker_instance | broker_application_name }}-np-svc
+    namespace: {{ ar_osc_amqbroker_ns }}
+  spec:
+    externalTrafficPolicy: Cluster
+    ports:
+    - name: 5672-5672
+      nodePort: {{ ar_osc_amqbroker_instance.broker_node_port }}
+      port: 5672
+      protocol: TCP
+      targetPort: 5672
+    selector:
+      deploymentConfig: {{ ar_osc_amqbroker_instance | broker_application_name }}-amq
+    sessionAffinity: None
+    type: NodePort
+  status:
+    loadBalancer: {}

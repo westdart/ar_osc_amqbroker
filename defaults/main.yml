@@ -1,0 +1,5 @@
+---
+ar_osc_amqbroker_k8s_template: "amq-broker-72-basic.yml"
+ar_osc_amqbroker_config_dest: '/tmp'
+ar_osc_amqbroker_xml_template: "amq7-template.xml.j2"
+ar_osc_amqbroker_xml_file: "{{ ar_osc_amqbroker_config_dest }}/amq-broker.xml"

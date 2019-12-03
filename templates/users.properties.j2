@@ -1,0 +1,4 @@
+{{ ar_osc_amqbroker_admin_username }}={{ ar_osc_amqbroker_admin_password }}
+{% for broker_user in broker_users %}
+{{ broker_user.name }}={{ secrets[ar_osc_amqbroker_name][broker_user.name] }}
+{% endfor %}

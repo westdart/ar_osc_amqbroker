@@ -1,0 +1,13 @@
+---
+- name: Generate Config
+  include_tasks: config.yml
+
+- name: Create load config for secrets
+  include_tasks: secrets.yml
+
+- name: Include openshift-applier role
+  include_role:
+    name: roles/openshift-applier/roles/openshift-applier
+
+- name: Remove load config for secrets
+  include_tasks: remove-secrets.yml

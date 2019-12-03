@@ -1,0 +1,25 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: amq-broker-cm
+metadata:
+  annotations:
+    description: Config Map containing QPid Router configuration
+    iconClass: icon-amq
+    openshift.io/display-name: QDRouter Config Map
+  labels:
+    app: {{ ar_osc_amqbroker_name }}
+  name: {{ ar_osc_amqbroker_name }}-broker-config-map
+objects:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ ar_osc_amqbroker_name }}-broker-config-map
+    namespace: {{ ar_osc_amqbroker_ns }}
+    labels:
+      app: {{ ar_osc_amqbroker_name }}
+  data:
+    custom-broker-config.xml: |-
+{% for line in BROKER_XML.split('\n') %}
+      {{ line }}
+{% endfor %}

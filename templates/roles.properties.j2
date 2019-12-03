@@ -1,0 +1,7 @@
+{% if broker_users | json_query("[?role=='admin'].name") | length > 0 %}
+admin={{ ar_osc_amqbroker_admin_username }},{{ broker_users | json_query("[?role=='admin'].name") | join(',') }}
+{% else %}
+admin={{ ar_osc_amqbroker_admin_username }}
+{% endif %}
+user={{ broker_users | json_query("[?role=='user'].name") | join(',') }}
+viewer={{ broker_users | json_query("[?role=='viewer'].name") | join(',') }}
