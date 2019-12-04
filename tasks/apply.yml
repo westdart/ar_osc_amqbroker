@@ -1,0 +1,4 @@
+---
+- name: Include openshift-applier role
+  include_role:
+    name: roles/openshift-applier/roles/openshift-applier

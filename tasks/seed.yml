@@ -1,0 +1,23 @@
+---
+- name: Create inventory dirs
+  file:
+    path: "{{ _ar_osc_amqbroker_config_dest_inventory }}/group_vars"
+    state: directory
+
+- name: Create seed hosts inventory
+  template:
+    src: hosts.j2
+    dest: "{{ _ar_osc_amqbroker_config_dest_inventory }}/hosts"
+
+# Create the seed-hosts
+- name: Create seed hosts
+  template:
+    src: seed-hosts-template.yml.j2
+    dest: "{{ _ar_osc_amqbroker_config_dest_inventory }}/group_vars/seed-hosts.yml"
+  with_items:
+    - "{{ app_target_instances }}"
+  loop_control:
+    loop_var: app_instance
+
+- name: Refresh inventory to ensure seed hosts changes picked up
+  meta: refresh_inventory

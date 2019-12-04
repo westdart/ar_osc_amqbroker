@@ -212,7 +212,7 @@ under the License.
 
          <!-- Outgoing addresses -->
          {% set query = "[?name!=`" + ar_osc_amqbroker_name + "`].incomingAddressList " %}
-         {% for addr in amq_ic_instances | json_query(query) | flatten %}
+         {% for addr in app_instances | json_query(query) | flatten %}
 
          <address name="{{ addr }}">
             <anycast>

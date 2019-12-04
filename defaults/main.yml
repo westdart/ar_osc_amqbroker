@@ -1,5 +1,10 @@
 ---
 ar_osc_amqbroker_k8s_template: "amq-broker-72-basic.yml"
 ar_osc_amqbroker_config_dest: '/tmp'
-ar_osc_amqbroker_xml_template: "amq7-template.xml.j2"
-ar_osc_amqbroker_xml_file: "{{ ar_osc_amqbroker_config_dest }}/amq-broker.xml"
+ar_osc_amqbroker_xml_template: "amq7-broker.xml.j2"
+
+_ar_osc_amqbroker_app_type: 'amqbroker'
+_ar_osc_amqbroker_config_dest: "{{ ar_osc_amqbroker_config_dest }}/{{ _ar_osc_amqbroker_app_type }}"
+_ar_osc_amqbroker_config_dest_inventory: "{{ _ar_osc_amqbroker_config_dest }}/inventory"
+_ar_osc_amqbroker_config_dest_templates: "{{ _ar_osc_amqbroker_config_dest }}/templates"
+_ar_osc_amqbroker_xml_file: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker.xml"

@@ -1,24 +1,35 @@
 ---
-- name: Generate the amq broker config
+- name: Create template dirs
+  file:
+    path: "{{ _ar_osc_amqbroker_config_dest_templates }}"
+    state: directory
+
+- name: Copy common templates
+  include_role:
+    name: ar_osc_common_templates
+  vars:
+    ar_osc_common_templates_dest: "{{ _ar_osc_amqbroker_config_dest_templates }}"
+
+- name: Generate the amq broker xml
   template:
     src: "{{ ar_osc_amqbroker_xml_template }}"
-    dest: "{{ ar_osc_amqbroker_xml_file }}"
+    dest: "{{ _ar_osc_amqbroker_xml_file }}"
 
 - set_fact:
-    BROKER_XML: "{{ lookup('file', ar_osc_amqbroker_xml_file) }}"
+    BROKER_XML: "{{ lookup('file', _ar_osc_amqbroker_xml_file) }}"
 
-- name: Generate broker xml config map
+- name: Generate the amq broker xml config map
   template:
     src: amq-broker-cm.yml.j2
-    dest: "{{ ar_osc_amqbroker_config_dest }}/amq-broker-cm.yml"
+    dest: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-cm.yml"
 
 - name: Generate the amq broker nodeport service config
   template:
     src: amq-broker-nodeport-service.yml.j2
-    dest: "{{ ar_osc_amqbroker_config_dest }}/amq-broker-nodeport-service.yml"
+    dest: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-nodeport-service.yml"
   when: ar_osc_amqbroker_instance.broker_node_port is defined
 
-- name: Copy AMQ Broker template to working area
+- name: Copy AMQ Broker k8s template to working area
   copy:
     src: "{{ ar_osc_amqbroker_k8s_template }}"
-    dest: "{{ ar_osc_amqbroker_config_dest }}/amq-broker-k8s-template.yml"
+    dest: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-k8s-template.yml"
