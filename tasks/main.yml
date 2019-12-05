@@ -3,4 +3,5 @@
 - include_tasks: secrets.yml
 - include_tasks: seed.yml
 - include_tasks: apply.yml
+- include_tasks: label.yml
 - include_tasks: remove-secrets.yml

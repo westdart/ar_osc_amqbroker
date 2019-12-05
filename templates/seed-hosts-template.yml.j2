@@ -34,10 +34,10 @@ openshift_cluster_content:
     - amqic
 {% endfor %}
     post_steps:
-      - role: scc_binding
+      - role: ar_os_scc_binding
         vars:
           tmp_dep_dir: {{ playbook_dir}}/../roles/
-          scc_binding_items: {{ serviceaccounts | to_json }}
+          ar_os_scc_binding_items: {{ serviceaccounts | to_json }}
 {% endif %}
 
 - object: Deployments {{ deployment_phase | upper }}
