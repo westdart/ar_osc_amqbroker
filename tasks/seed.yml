@@ -21,3 +21,13 @@
 
 - name: Refresh inventory to ensure seed hosts changes picked up
   meta: refresh_inventory
+
+- name: Clear facts to ensure seed hosts changes picked up
+  meta: clear_facts
+
+- name: reload facts
+  setup:
+
+- name: Load new group_vars
+  include_vars:
+    file: "{{ _ar_osc_amqbroker_config_dest_inventory }}/group_vars/seed-hosts.yml"
