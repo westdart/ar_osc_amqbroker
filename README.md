@@ -71,12 +71,11 @@ The following are variable used within the role:
 | amqbroker_data_dir | The AMQ Broker data directory  | '/opt/amq/data' |
 
 
-Dependencies
-------------
+## Dependencies
+
 - openshift-applier
 
-Example Playbook
-----------------
+## Example Playbook
 
 To create AMQ Broker:
 ```
@@ -100,12 +99,10 @@ To create AMQ Broker:
 ```
 
 
-License
--------
+## License
 
 BSD
 
-Author Information
-------------------
+## Author Information
 
 dstewart@redhat.com
