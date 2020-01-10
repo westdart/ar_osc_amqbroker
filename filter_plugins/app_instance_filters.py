@@ -1,11 +1,6 @@
 #
 # Filter functions defining naming standard for AMQ and Interconnect instances
 #
-import re
-def app_var(app_instance, name, default):
-    if name in app_instance:
-        return app_instance[name]
-    return default
 
 def app_common_name(app_instance):
     return app_instance['name'].lower()
@@ -20,9 +15,17 @@ def app_namespace(app_instance, deployment_phase):
         return app_instance['parent'].lower() + "-" + phase
     return name + "-" + phase
 
-def broker_application_name(app_instance):
+def application_name(app_instance):
     name = app_common_name(app_instance)
     return name + "-broker"
+
+def config_map_name(app_instance):
+    name = app_common_name(app_instance)
+    return application_name(app_instance) + "-config-map"
+
+def secrets_name(app_instance):
+    name = app_common_name(app_instance)
+    return application_name(app_instance) + "-secrets"
 
 class FilterModule(object):
     '''
@@ -31,9 +34,11 @@ class FilterModule(object):
 
     def filters(self):
         return {
-            'broker_application_name': broker_application_name,
             'app_namespace': app_namespace,
-            'app_common_name': app_common_name
+            'app_common_name': app_common_name,
+            'application_name': application_name,
+            'config_map_name': config_map_name,
+            'secrets_name': secrets_name,
         }
 
 '''
@@ -44,21 +49,32 @@ import unittest
 
 class TestAppInstanceFilters(unittest.TestCase):
     app_instance = {
-        'name': "TRG001",
-        'incomingAddressList': ['addr_TRG001_1', 'addr_TRG001_2', 'addr_TRG001_3']
+        'name': "TRG001"
       }
     app_instance_with_parent = {
         'name':   "TRG002",
-        'parent': "TRG001",
-        'cert_locale': 'Else',
-        'amq_ic_domain': 'test.com',
-        'incomingAddressList': ['addr_TRG002_1', 'addr_TRG002_2', 'addr_TRG002_3']
+        'parent': "TRG001"
     }
 
     app_instances = [app_instance, app_instance_with_parent]
 
-    def test_something(self):
-        self.assertEqual('', '')
+    def test_app_namespace(self):
+        self.assertEqual('trg001-dev', app_namespace(self.app_instance, 'dev'))
+
+    def test_app_namespace_with_parent(self):
+        self.assertEqual('trg001-dev', app_namespace(self.app_instance_with_parent, 'dev'))
+
+    def test_application_name(self):
+        self.assertEqual('trg001-aspera', application_name(self.app_instance))
+
+    def test_application_name_with_parent(self):
+        self.assertEqual('trg002-aspera', application_name(self.app_instance_with_parent))
+
+    def test_config_map_name(self):
+        self.assertEqual('trg001-aspera-config-map', config_map_name(self.app_instance))
+
+    def test_secrets_name(self):
+        self.assertEqual('trg001-aspera-secrets', secrets_name(self.app_instance))
 
 
 if __name__ == '__main__':

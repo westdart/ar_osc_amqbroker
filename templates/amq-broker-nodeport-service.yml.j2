@@ -10,14 +10,14 @@ metadata:
     openshift.io/display-name: AMQ Broker NodePort Service
   labels:
     app: {{ ar_osc_amqbroker_name }}
-  name: {{ ar_osc_amqbroker_instance | broker_application_name }}-np-svc
+  name: {{ ar_osc_amqbroker_instance | application_name }}-np-svc
 objects:
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
       app: {{ ar_osc_amqbroker_name }}
-    name: {{ ar_osc_amqbroker_instance | broker_application_name }}-np-svc
+    name: {{ ar_osc_amqbroker_instance | application_name }}-np-svc
     namespace: {{ ar_osc_amqbroker_ns }}
   spec:
     externalTrafficPolicy: Cluster
@@ -28,7 +28,7 @@ objects:
       protocol: TCP
       targetPort: 5672
     selector:
-      deploymentConfig: {{ ar_osc_amqbroker_instance | broker_application_name }}-amq
+      deploymentConfig: {{ ar_osc_amqbroker_instance | application_name }}-amq
     sessionAffinity: None
     type: NodePort
   status:

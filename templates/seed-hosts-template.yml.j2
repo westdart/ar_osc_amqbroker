@@ -44,7 +44,7 @@ openshift_cluster_content:
   content:
 {% if ar_osc_amqbroker_instance.incomingAddressList | length > 0 %}
 # Secret for {{ ar_osc_amqbroker_name }} broker
-  - name: {{ ar_osc_amqbroker_name }}-broker-secrets
+  - name: {{ ar_osc_amqbroker_instance | secrets_name }}
     namespace: "{{ ar_osc_amqbroker_ns }}"
     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-secret.yml"
     action: apply
@@ -60,7 +60,7 @@ openshift_cluster_content:
     - amqbroker
 
 # Broker Config Map for {{ ar_osc_amqbroker_name }}
-  - name: {{ ar_osc_amqbroker_name }}-broker-config-map
+  - name: {{ ar_osc_amqbroker_instance | config_map_name }}
     namespace: "{{ ar_osc_amqbroker_ns }}"
     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-cm.yml"
     action: apply
@@ -72,15 +72,15 @@ openshift_cluster_content:
 # Application instances
 {% if ar_osc_amqbroker_instance.incomingAddressList | length > 0 %}
 # AMQ Broker instance for {{ ar_osc_amqbroker_name }}
-  - name: "{{ ar_osc_amqbroker_instance | broker_application_name }}"
+  - name: "{{ ar_osc_amqbroker_instance | application_name }}"
     namespace: "{{ ar_osc_amqbroker_ns }}"
     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-k8s-template.yml"
     action: apply
     params_from_vars:
-      APPLICATION_NAME: "{{ ar_osc_amqbroker_instance | broker_application_name }}"
+      APPLICATION_NAME: "{{ ar_osc_amqbroker_instance | application_name }}"
       AMQ_REQUIRE_LOGIN: true
-      AMQ_NAME: "{{ ar_osc_amqbroker_instance | broker_application_name }}"
-      BROKER_CONFIG_MAP: "{{ ar_osc_amqbroker_name }}-broker-config-map"
+      AMQ_NAME: "{{ ar_osc_amqbroker_instance | application_name }}"
+      BROKER_CONFIG_MAP: "{{ ar_osc_amqbroker_instance | config_map_name }}"
       SECRET_FILES_NAME: "{{ ar_osc_amqbroker_name }}-broker-secret-files"
 {% if amqbroker_image is defined or 'amqbroker_image' in ar_osc_amqbroker_instance %}
       IMAGE: {{ ar_osc_amqbroker_instance.amqbroker_image | default(amqbroker_image) }}
@@ -89,14 +89,16 @@ openshift_cluster_content:
       IMAGE_STREAM_NAMESPACE: {{ ar_osc_amqbroker_instance.amqbroker_image_ns | default(amqbroker_image_ns) }}
 {% endif %}
       APP_GROUP: "{{ ar_osc_amqbroker_name }}"
-      AMQ_SECRETS: "{{ ar_osc_amqbroker_instance.name | lower }}-broker-secrets"
+      APP_NAME: "{{ ar_osc_amqbroker_instance | application_name }}"
+      AMQ_SECRETS: "{{ ar_osc_amqbroker_instance | secrets_name }}"
       AMQ_DATA_DIR: "{{ amqbroker_data_dir | default('/opt/amq/data') }}"
+      VOLUME_CAPACITY: "{{ ar_osc_amqbroker_instance.amqbroker_disk_size | default(amqbroker_disk_size) }}"
     tags:
     - amqbroker
 
 {% if 'broker_node_port' in ar_osc_amqbroker_instance %}
 # Nodeport Service for {{ ar_osc_amqbroker_name }}-amq-broker
-  - name: "{{ ar_osc_amqbroker_instance | broker_application_name }}-np-svc"
+  - name: "{{ ar_osc_amqbroker_instance | application_name }}-np-svc"
     namespace: "{{ ar_osc_amqbroker_ns }}"
     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-nodeport-service.yml"
     action: apply

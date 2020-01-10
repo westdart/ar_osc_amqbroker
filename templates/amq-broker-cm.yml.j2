@@ -9,12 +9,12 @@ metadata:
     openshift.io/display-name: QDRouter Config Map
   labels:
     app: {{ ar_osc_amqbroker_name }}
-  name: {{ ar_osc_amqbroker_name }}-broker-config-map
+  name: {{ ar_osc_amqbroker_instance | config_map_name }}
 objects:
 - apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: {{ ar_osc_amqbroker_name }}-broker-config-map
+    name: {{ ar_osc_amqbroker_instance | config_map_name }}
     namespace: {{ ar_osc_amqbroker_ns }}
     labels:
       app: {{ ar_osc_amqbroker_name }}

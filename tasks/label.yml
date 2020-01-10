@@ -4,17 +4,29 @@
 
 - set_fact:
     ar_osc_amqbroker_config_labels: [
-      {"object": "{{ _ar_osc_amqbroker_k8s_deployment_type }}", "name": "{{ ar_osc_amqbroker_instance | broker_application_name }}-amq"},
-      {"object": "Secret",                                "name": "{{ ar_osc_amqbroker_name }}-broker-secrets"},
+      {"object": "{{ _ar_osc_amqbroker_k8s_deployment_type }}", "name": "{{ ar_osc_amqbroker_instance | application_name }}-amq"},
+      {"object": "Secret",                                "name": "{{ ar_osc_amqbroker_instance | secrets_name }}"},
       {"object": "Secret",                                "name": "{{ ar_osc_amqbroker_name }}-broker-secret-files"},
-      {"object": "ConfigMap",                             "name": "{{ ar_osc_amqbroker_name }}-broker-config-map"},
+      {"object": "ConfigMap",                             "name": "{{ ar_osc_amqbroker_instance | config_map_name }}"},
     ]
 
-- name: Label Broker Objects
+- name: Label Broker Objects with appgroup
   include_role:
     name: roles/casl-ansible/roles/openshift-labels
   vars:
     label:            "appgroup={{ ar_osc_amqbroker_name }}"
+    target_object:    "{{ ar_osc_amqbroker_config_label.object }}"
+    target_name:      "{{ ar_osc_amqbroker_config_label.name }}"
+    target_namespace: "{{ ar_osc_amqbroker_instance | app_namespace(deployment_phase) }}"
+  with_items:         "{{ ar_osc_amqbroker_config_labels }}"
+  loop_control:
+    loop_var: ar_osc_amqbroker_config_label
+
+- name: Label Broker Objects with app
+  include_role:
+    name: roles/casl-ansible/roles/openshift-labels
+  vars:
+    label:            "app={{ ar_osc_amqbroker_name }}-broker"
     target_object:    "{{ ar_osc_amqbroker_config_label.object }}"
     target_name:      "{{ ar_osc_amqbroker_config_label.name }}"
     target_namespace: "{{ ar_osc_amqbroker_instance | app_namespace(deployment_phase) }}"

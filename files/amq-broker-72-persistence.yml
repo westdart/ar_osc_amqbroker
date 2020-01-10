@@ -4,6 +4,7 @@ labels:
   template: amq-broker-72-persistence
   xpaas: 1.4.16
   appgroup: ${APP_GROUP}
+  app: ${APP_NAME}
 message: A new messaging service has been created in your project. It will handle the protocol(s) "${AMQ_PROTOCOL}". The username/password for accessing the service is ${AMQ_USER}/${AMQ_PASSWORD}.
 metadata:
   annotations:
@@ -266,6 +267,10 @@ parameters:
 - description: Application Group Name
   displayName: Application Group Name
   name: APP_GROUP
+  required: true
+- description: App Name
+  displayName: App Name
+  name: APP_NAME
   required: true
 - description: AMQ secrets
   displayName: AMQ secrets
