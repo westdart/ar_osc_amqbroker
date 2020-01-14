@@ -118,12 +118,7 @@ objects:
                 # Specify the key associated with the value
                 key: custom-broker-config.xml
           image: ${IMAGE}
-          readinessProbe:
-            exec:
-              command:
-              - "/bin/bash"
-              - "-c"
-              - "/opt/amq/bin/readinessProbe.sh"            
+          imagePullPolicy: Always
           name: ${APPLICATION_NAME}-amq
           ports:
           - containerPort: 8161
@@ -141,6 +136,12 @@ objects:
           - containerPort: 61616
             name: all
             protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - /opt/amq/bin/readinessProbe.sh
           volumeMounts:
           - name: ${APPLICATION_NAME}-amq-pvol
             mountPath: ${AMQ_DATA_DIR}
@@ -163,6 +164,15 @@ objects:
           requests:
             storage: ${VOLUME_CAPACITY}
     triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}-amq
+        from:
+          kind: ImageStreamTag
+          name: ${IMAGE}
+          namespace: ${IMAGE_STREAM_NAMESPACE}
+      type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: Route
