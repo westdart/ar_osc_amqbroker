@@ -30,10 +30,11 @@ The 'ar_osc_amqbroker_instance' variable is an object that contains the details 
 The structure is:
 ```
   {
-    name: "<the name>",
-    aspera_image: "<the image tag to use>",
-    aspera_license_file: "<path to the Aspera license file>",
-    aspera_node_port: <the node port to use to connect over ssh to Aspera>
+    name: <the name>,
+    namespace: <the namespace>,
+    incomingAddressList: [<list of queues where this broker is the terminus>],
+    sendToDLAOnNoRoute: '<true|false>',
+    broker_node_port: <node-port>, # Optional - for direct connection to the broker from outside the cluster
   }
 ```
 
