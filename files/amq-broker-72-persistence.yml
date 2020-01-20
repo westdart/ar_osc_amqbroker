@@ -152,6 +152,8 @@ objects:
         - name: secret-files
           secret:
             secretName: ${SECRET_FILES_NAME}
+    updateStrategy:
+      type: RollingUpdate
     volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim
