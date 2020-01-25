@@ -33,3 +33,10 @@
   copy:
     src: "{{ ar_osc_amqbroker_k8s_template }}"
     dest: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-k8s-template.yml"
+  when: "'.yml.j2' not in ar_osc_amqbroker_k8s_template"
+
+- name: Generate the AMQ Broker k8s template to working area
+  template:
+    src: "{{ ar_osc_amqbroker_k8s_template }}"
+    dest: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-k8s-template.yml"
+  when: "'.yml.j2' in ar_osc_amqbroker_k8s_template"

@@ -93,6 +93,7 @@ openshift_cluster_content:
       AMQ_SECRETS: "{{ ar_osc_amqbroker_instance | secrets_name }}"
       AMQ_DATA_DIR: "{{ amqbroker_data_dir | default('/opt/amq/data') }}"
       VOLUME_CAPACITY: "{{ ar_osc_amqbroker_instance.amqbroker_disk_size | default(amqbroker_disk_size) }}"
+      PVC_ENV: "{{ ar_osc_amqbroker_instance.pvc_env | default(pvc_env) }}"
     tags:
     - amqbroker
 

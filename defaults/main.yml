@@ -2,9 +2,20 @@
 ar_osc_amqbroker_k8s_template: "amq-broker-72-basic.yml"
 ar_osc_amqbroker_config_dest: '/tmp'
 ar_osc_amqbroker_xml_template: "amq7-broker-basic.xml.j2"
+ar_osc_amqbroker_pvc: {
+  name: 'pvc-${APPLICATION_NAME}-${PVC_ENV}',
+  accessModes: ['ReadWriteOnce'],
+  size: '1Gi',
+  mountPath: '/opt/amq/data',
+  # The following are optional, if not present then they are omitted and OpenShift just tries to find closest match
+  # storageClass: '<some storage class>',
+  # volumeName: '<some name>'
+}
 
 _ar_osc_amqbroker_app_type: 'amqbroker'
 _ar_osc_amqbroker_config_dest: "{{ ar_osc_amqbroker_config_dest }}/{{ _ar_osc_amqbroker_app_type }}"
 _ar_osc_amqbroker_config_dest_inventory: "{{ _ar_osc_amqbroker_config_dest }}/inventory"
 _ar_osc_amqbroker_config_dest_templates: "{{ _ar_osc_amqbroker_config_dest }}/templates"
 _ar_osc_amqbroker_xml_file: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker.xml"
+
+_ar_osc_amqbroker_pvc: "{{ ar_osc_amqbroker_instance.amqbroker_pvc | default(ar_osc_amqbroker_pvc) }}"
