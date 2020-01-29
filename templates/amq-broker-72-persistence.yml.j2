@@ -25,38 +25,76 @@ objects:
   kind: Service
   metadata:
     annotations:
-      description: The broker's headless, non load balanced service
+      description: The broker's console and Jolokia port.
     labels:
       application: ${APPLICATION_NAME}
-      app: ${APPLICATION_NAME}
+    name: ${AMQ_NAME}-amq-jolokia
+  spec:
+    ports:
+    - port: 8161
+      targetPort: 8161
+    selector:
+      deploymentConfig: ${APPLICATION_NAME}-amq
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The broker's AMQP port.
+    labels:
+      application: ${APPLICATION_NAME}
     name: ${AMQ_NAME}-amq-amqp
   spec:
-    clusterIP: None
-    publishNotReadyAddresses: true
     ports:
-    - port: 61616
-      name: all
-      protocol: TCP
-      targetPort: 61616
-    - port: 8161
-      name: console-jolokia
-      protocol: TCP
-      targetPort: 8161
     - port: 5672
-      name: amqp
-      protocol: TCP
       targetPort: 5672
+    selector:
+      deploymentConfig: ${APPLICATION_NAME}-amq
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The broker's MQTT port.
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${AMQ_NAME}-amq-mqtt
+  spec:
+    ports:
     - port: 1883
-      name: mqtt
-      protocol: TCP
       targetPort: 1883
+    selector:
+      deploymentConfig: ${APPLICATION_NAME}-amq
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The broker's STOMP port.
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${AMQ_NAME}-amq-stomp
+  spec:
+    ports:
     - port: 61613
-      name: stomp
-      protocol: TCP
       targetPort: 61613
     selector:
       deploymentConfig: ${APPLICATION_NAME}-amq
-    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The broker's OpenWire port.
+      service.alpha.openshift.io/dependencies: '[{"name": "${AMQ_NAME}-amq-amqp",
+        "kind": "Service"},{"name": "${AMQ_NAME}-amq-mqtt", "kind": "Service"},{"name":
+        "${AMQ_NAME}-amq-stomp", "kind": "Service"}]'
+    labels:
+      application: ${APPLICATION_NAME}
+    name: ${AMQ_NAME}-amq-tcp
+  spec:
+    ports:
+    - port: 61616
+      targetPort: 61616
+    selector:
+      deploymentConfig: ${APPLICATION_NAME}-amq
+{{ pvc_macros.pvc_definition(_ar_osc_amqbroker_pvc, ar_osc_amqbroker_pvc, '0') }}
 - apiVersion: apps/v1beta1
   kind: StatefulSet
   metadata:
@@ -149,6 +187,8 @@ objects:
           - mountPath: /opt/amq/conf/
             name: secret-files
         terminationGracePeriodSeconds: 60
+        securityContext:
+          supplementalGroups: [1000310000]
         volumes:
         - name: secret-files
           secret:
@@ -156,8 +196,6 @@ objects:
 {{ pvc_macros.volume_definition(_ar_osc_amqbroker_pvc, ar_osc_amqbroker_pvc, '8') }}
     updateStrategy:
       type: RollingUpdate
-    volumeClaimTemplates:
-{{ pvc_macros.pvc_definition(_ar_osc_amqbroker_pvc, ar_osc_amqbroker_pvc, '4') }}
     triggers:
     - imageChangeParams:
         automatic: true
@@ -174,14 +212,11 @@ objects:
   metadata:
     labels:
       application: ${APPLICATION_NAME}
-      app: ${APPLICATION_NAME}
-    name: console-jolokia
+    name: ${AMQ_NAME}-console
   spec:
-    port:
-      targetPort: console-jolokia
     to:
       kind: Service
-      name: ${AMQ_NAME}-amq-amqp
+      name: ${AMQ_NAME}-amq-jolokia
 parameters:
 - description: The name for the application.
   displayName: Application Name
@@ -205,7 +240,7 @@ parameters:
 - description: Size of the volume used by AMQ for persisting messages.
   displayName: AMQ Volume Size
   name: VOLUME_CAPACITY
-  value: {{ _ar_osc_amqbroker_pvc.size | default(ar_osc_amqbroker_pvc.size) }}
+  value: {{ _ar_osc_amqbroker_pvc.size | default(ar_osc_amqbroker_pvc.size) | default('2Gi')}}
   required: true
 - description: User name for standard broker user. It is required for connecting to the broker. If left empty, it will be generated.
   displayName: AMQ Username
