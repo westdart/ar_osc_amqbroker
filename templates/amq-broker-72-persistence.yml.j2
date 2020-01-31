@@ -240,7 +240,7 @@ parameters:
 - description: Size of the volume used by AMQ for persisting messages.
   displayName: AMQ Volume Size
   name: VOLUME_CAPACITY
-  value: {{ _ar_osc_amqbroker_pvc.size | default(ar_osc_amqbroker_pvc.size) | default('2Gi')}}
+  value: {{ _ar_osc_amqbroker_pvc.size | default(ar_osc_amqbroker_pvc.size) | default('1Gi')}}
   required: true
 - description: User name for standard broker user. It is required for connecting to the broker. If left empty, it will be generated.
   displayName: AMQ Username

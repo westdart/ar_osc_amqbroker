@@ -9,6 +9,7 @@ ar_osc_amqbroker_pvc: {
   # The following are optional, if not present then they are omitted and OpenShift just tries to find closest match
   # storageClass: '<some storage class>',
   # volumeName: '<some name>'
+  # name: '<the PVC name>' - this is defaulted in the ar_osc_common_templates pvc-macros.j2
 }
 
 _ar_osc_amqbroker_app_type: 'amqbroker'
