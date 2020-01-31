@@ -136,6 +136,7 @@ under the License.
             <auto-create-addresses>true</auto-create-addresses>
             <auto-create-jms-queues>true</auto-create-jms-queues>
             <auto-create-jms-topics>true</auto-create-jms-topics>
+            <send-to-dla-on-no-route>false</send-to-dla-on-no-route>
          </address-setting>
          <!--default for catch all-->
          <address-setting match="#">
@@ -249,16 +250,17 @@ under the License.
 
       </diverts>
 
-      <broker-plugins>
+      <!-- <broker-plugins>
          <broker-plugin class-name="org.apache.activemq.artemis.core.server.plugin.impl.LoggingActiveMQServerPlugin">
             <property key="LOG_ALL_EVENTS" value="true" />
-            <!-- <property key="LOG_CONNECTION_EVENTS" value="true"/>
+            <property key="LOG_CONNECTION_EVENTS" value="true"/>
             <property key="LOG_SESSION_EVENTS" value="true"/>
             <property key="LOG_CONSUMER_EVENTS" value="true"/>
             <property key="LOG_DELIVERING_EVENTS" value="true"/>
             <property key="LOG_SENDING_EVENTS" value="true"/>
-            <property key="LOG_INTERNAL_EVENTS" value="true"/> -->
+            <property key="LOG_INTERNAL_EVENTS" value="true"/>
          </broker-plugin>
       </broker-plugins>
+      -->
    </core>
 </configuration>
