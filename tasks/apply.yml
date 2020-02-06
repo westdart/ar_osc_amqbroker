@@ -1,10 +1,10 @@
 ---
 - name: Login to OpenShift
   include_role:
-    name: ar_osc_common_templates
+    name: ar_os_common
     tasks_from: login
   vars:
-    ar_osc_common_templates_openshift_login_url: "{{ ar_osc_amqbroker_instance['oc_login_url'] | default(oc_login_url) }}"
+    ar_os_common_openshift_login_url: "{{ ar_osc_amqbroker_instance['oc_login_url'] | default(oc_login_url) }}"
 
 - name: Include openshift-applier role
   include_role:

@@ -6,10 +6,10 @@
 
 - name: Copy common templates
   include_role:
-    name: ar_osc_common_templates
+    name: ar_os_common
   vars:
-    ar_osc_common_templates_dest: "{{ _ar_osc_amqbroker_config_dest_templates }}"
-    ar_osc_common_templates_selection: ['project-template.yml']
+    ar_os_common_dest: "{{ _ar_osc_amqbroker_config_dest_templates }}"
+    ar_os_common_selection: ['project-template.yml']
 
 - name: Generate the amq broker xml
   template:
