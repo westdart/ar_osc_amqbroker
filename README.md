@@ -3,7 +3,7 @@ Ansible Role for OpenShift Config targeting the AMQ Broker application
 
 ## amqbroker_config
 
-Generate the config files required to build out Aspera file transfer 
+Generate the config files required to build out AMQ Broker 
 nodes
 
 ## Requirements
@@ -80,7 +80,7 @@ The following are variable used within the role:
 
 To create AMQ Broker:
 ```
-- name: Build Aspera Docker images
+- name: Build AMQ Broker
   hosts: localhost
   tasks:
     - name: "Create AMQ Broker"
