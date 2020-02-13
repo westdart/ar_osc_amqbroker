@@ -10,9 +10,7 @@ openshift_cluster_content:
       NAMESPACE_DISPLAY_NAME: "{{ ar_osc_amqbroker_ns | upper }}"
     tags:
     - projects
-    - aspera
     - amqbroker
-    - amqic
 
 {% if ar_osc_amqbroker_instance.serviceaccounts is defined %}
 {% set serviceaccounts = ar_osc_amqbroker_instance.serviceaccounts | merge_list_of_dicts({'namespace': ar_osc_amqbroker_ns}) %}
@@ -29,9 +27,7 @@ openshift_cluster_content:
     tags:
     - projects
     - serviceaccounts
-    - aspera
     - amqbroker
-    - amqic
 {% endfor %}
     post_steps:
       - role: ar_os_scc_binding
