@@ -1,11 +1,7 @@
 ---
-- name: Login to OpenShift
+- name: Seed OpenShift
   include_role:
-    name: ar_os_common
-    tasks_from: login
+    name: ar_os_seed
+    tasks_from: apply
   vars:
-    ar_os_common_openshift_login_url: "{{ ar_osc_amqbroker_instance['oc_login_url'] | default(oc_login_url) }}"
-
-- name: Include openshift-applier role
-  include_role:
-    name: roles/openshift-applier/roles/openshift-applier
+    ar_os_seed_openshift_login_url: "{{ ar_osc_amqbroker_openshift_login_url }}"

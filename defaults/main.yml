@@ -14,8 +14,32 @@ ar_osc_amqbroker_pvc: {
 
 _ar_osc_amqbroker_app_type: 'amqbroker'
 _ar_osc_amqbroker_config_dest: "{{ ar_osc_amqbroker_config_dest }}/{{ _ar_osc_amqbroker_app_type }}"
-_ar_osc_amqbroker_config_dest_inventory: "{{ _ar_osc_amqbroker_config_dest }}/inventory"
 _ar_osc_amqbroker_config_dest_templates: "{{ _ar_osc_amqbroker_config_dest }}/templates"
 _ar_osc_amqbroker_xml_file: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker.xml"
 
 _ar_osc_amqbroker_pvc: "{{ ar_osc_amqbroker_instance.amqbroker_pvc | default(ar_osc_amqbroker_pvc) }}"
+
+ar_osc_amqbroker_openshift_login_url: "{{ ar_osc_amqbroker_instance['oc_login_url'] | default(oc_login_url) }}"
+
+_ar_osc_amqbroker_openshift_content: [
+  { name: "{{ ar_osc_amqbroker_instance | secrets_name }}",     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-secret.yml" },
+  { name: "{{ ar_osc_amqbroker_name }}-broker-secret-files",    template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-files-secret.yml"},
+  { name: "{{ ar_osc_amqbroker_instance | config_map_name }}",  template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-cm.yml" },
+  { name: "{{ ar_osc_amqbroker_instance | application_name }}", template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-k8s-template.yml",
+    params: {
+      APPLICATION_NAME: "{{ ar_osc_amqbroker_instance | application_name }}",
+      AMQ_REQUIRE_LOGIN: 'true',
+      AMQ_NAME: "{{ ar_osc_amqbroker_instance | application_name }}",
+      BROKER_CONFIG_MAP: "{{ ar_osc_amqbroker_instance | config_map_name }}",
+      SECRET_FILES_NAME: "{{ ar_osc_amqbroker_name }}-broker-secret-files",
+      IMAGE: "{{ ar_osc_amqbroker_instance.amqbroker_image | default(amqbroker_image) }}",
+      IMAGE_STREAM_NAMESPACE: "{{ ar_osc_amqbroker_instance.amqbroker_image_ns | default(amqbroker_image_ns) }}",
+      APP_GROUP: "{{ ar_osc_amqbroker_name }}",
+      APP_NAME: "{{ ar_osc_amqbroker_instance | application_name }}",
+      AMQ_SECRETS: "{{ ar_osc_amqbroker_instance | secrets_name }}",
+      AMQ_DATA_DIR: "{{ amqbroker_data_dir | default('/opt/amq/data') }}",
+      VOLUME_CAPACITY: "{{ ar_osc_amqbroker_instance.amqbroker_disk_size | default(amqbroker_disk_size) }}",
+      PVC_ENV: "{{ ar_osc_amqbroker_instance.pvc_env | default(pvc_env) }}"
+    }
+  }
+]

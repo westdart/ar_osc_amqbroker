@@ -1,7 +1,7 @@
 ---
-ar_osc_amqbroker_ns: None
-ar_osc_amqbroker_name: None
-ar_osc_amqbroker_instance: None
-ar_osc_amqbroker_admin_username: None
-ar_osc_amqbroker_admin_password: None
+ar_osc_amqbroker_ns: null
+ar_osc_amqbroker_name: null
+ar_osc_amqbroker_instance: null
+ar_osc_amqbroker_admin_username: null
+ar_osc_amqbroker_admin_password: null
 ar_osc_amqbroker_user_roles: []

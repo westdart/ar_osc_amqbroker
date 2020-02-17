@@ -1,33 +1,11 @@
 ---
-- name: Create inventory dirs
-  file:
-    path: "{{ _ar_osc_amqbroker_config_dest_inventory }}/group_vars"
-    state: directory
-
-- name: Create seed hosts inventory
-  template:
-    src: hosts.j2
-    dest: "{{ _ar_osc_amqbroker_config_dest_inventory }}/hosts"
-
-# Create the seed-hosts
-- name: Create seed hosts
-  template:
-    src: seed-hosts-template.yml.j2
-    dest: "{{ _ar_osc_amqbroker_config_dest_inventory }}/group_vars/seed-hosts.yml"
-  with_items:
-    - "{{ app_target_instances }}"
-  loop_control:
-    loop_var: app_instance
-
-- name: Refresh inventory to ensure seed hosts changes picked up
-  meta: refresh_inventory
-
-- name: Clear facts to ensure seed hosts changes picked up
-  meta: clear_facts
-
-- name: reload facts
-  setup:
-
-- name: Load new group_vars
-  include_vars:
-    file: "{{ _ar_osc_amqbroker_config_dest_inventory }}/group_vars/seed-hosts.yml"
+- name: Seed OpenShift
+  include_role:
+    name: ar_os_seed
+    tasks_from: seed
+  vars:
+    ar_os_seed_config_dest: "{{ _ar_osc_amqbroker_config_dest }}"
+    ar_os_seed_namespace: "{{ ar_osc_amqbroker_ns }}"
+    ar_os_seed_openshift_content: "{{ _ar_osc_amqbroker_openshift_content }}"
+    ar_os_seed_openshift_login_url: "{{ ar_osc_amqbroker_openshift_login_url }}"
+    ar_os_seed_registry_secrets: "{{ registry_secrets | default([]) }}"
