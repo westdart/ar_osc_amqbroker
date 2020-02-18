@@ -197,15 +197,6 @@ objects:
     updateStrategy:
       type: RollingUpdate
     triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${APPLICATION_NAME}-amq
-        from:
-          kind: ImageStreamTag
-          name: ${IMAGE}
-          namespace: ${IMAGE_STREAM_NAMESPACE}
-      type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: Route
