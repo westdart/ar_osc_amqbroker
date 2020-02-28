@@ -21,6 +21,13 @@ _ar_osc_amqbroker_pvc: "{{ ar_osc_amqbroker_instance.amqbroker_pvc | default(ar_
 
 ar_osc_amqbroker_openshift_login_url: "{{ ar_osc_amqbroker_instance['oc_login_url'] | default(oc_login_url) }}"
 
+ar_osc_amqbroker_container_max_memory: "{{ ar_osc_amqbroker_instance.container_max_mem | default(container_max_mem) | default(5368709120) }}"
+ar_osc_amqbroker_java_max_memory_ratio: "{{ ar_osc_amqbroker_instance.java_max_mem_ratio | default(java_max_mem_ratio) | default(50) }}"
+ar_osc_amqbroker_java_initial_memory_ratio: "{{ ar_osc_amqbroker_instance.java_initial_mem_ratio | default(java_initial_mem_ratio) | default(30) }}"
+# Set default GLOBAL_MAX_SIZE to a 5th of Xmx (recommended in doc https://activemq.apache.org/components/artemis/documentation/2.1.0/perf-tuning.html)
+ar_osc_amqbroker_default_global_max_size: "{{ ((((ar_osc_amqbroker_container_max_memory | int * ar_osc_amqbroker_java_max_memory_ratio | int) / (100 * 1048576)) / 5) * 1048576) | int | abs }}"
+ar_osc_amqbroker_global_max_size: "{{ ar_osc_amqbroker_instance.global_max_size | default(global_max_size) | default(ar_osc_amqbroker_default_global_max_size) }}"
+
 _ar_osc_amqbroker_openshift_content: [
   { name: "{{ ar_osc_amqbroker_instance | secrets_name }}",     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-secret.yml" },
   { name: "{{ ar_osc_amqbroker_name }}-broker-secret-files",    template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-files-secret.yml"},
@@ -39,7 +46,11 @@ _ar_osc_amqbroker_openshift_content: [
       AMQ_SECRETS: "{{ ar_osc_amqbroker_instance | secrets_name }}",
       AMQ_DATA_DIR: "{{ amqbroker_data_dir | default('/opt/amq/data') }}",
       VOLUME_CAPACITY: "{{ ar_osc_amqbroker_instance.amqbroker_disk_size | default(amqbroker_disk_size) }}",
-      PVC_ENV: "{{ ar_osc_amqbroker_instance.pvc_env | default(pvc_env) }}"
+      PVC_ENV: "{{ ar_osc_amqbroker_instance.pvc_env | default(pvc_env) }}",
+      GLOBAL_MAX_SIZE: "{{ ar_osc_amqbroker_global_max_size }}",
+      CONTAINER_MAX_MEMORY: "{{ ar_osc_amqbroker_container_max_memory }}",
+      JAVA_MAX_MEM_RATIO: "{{ ar_osc_amqbroker_java_max_memory_ratio }}",
+      JAVA_INITIAL_MEM_RATIO: "{{ ar_osc_amqbroker_java_initial_memory_ratio }}"
     }
   }
 ]

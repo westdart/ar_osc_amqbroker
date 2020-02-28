@@ -134,8 +134,8 @@ objects:
             value: ${AMQ_QUEUES}
           - name: AMQ_ADDRESSES
             value: ${AMQ_ADDRESSES}
-          - name: AMQ_GLOBAL_MAX_SIZE
-            value: ${AMQ_GLOBAL_MAX_SIZE}
+          - name: GLOBAL_MAX_SIZE
+            value: ${GLOBAL_MAX_SIZE}
           - name: AMQ_REQUIRE_LOGIN
             value: ${AMQ_REQUIRE_LOGIN}
           - name: AMQ_EXTRA_ARGS
@@ -151,6 +151,12 @@ objects:
                 name: ${BROKER_CONFIG_MAP}
                 # Specify the key associated with the value
                 key: custom-broker-config.xml
+          - name: CONTAINER_MAX_MEMORY
+            value: ${CONTAINER_MAX_MEMORY}
+          - name: JAVA_MAX_MEM_RATIO
+            value: ${JAVA_MAX_MEM_RATIO}
+          - name: JAVA_INITIAL_MEM_RATIO
+            value: ${JAVA_INITIAL_MEM_RATIO}
           image: ${IMAGE}
           imagePullPolicy: Always
           name: ${APPLICATION_NAME}-amq
@@ -236,7 +242,7 @@ parameters:
 - description: 'Maximum amount of memory which message data may consume (Default:
     Undefined, half of the system''s memory).'
   displayName: AMQ Global Max Size
-  name: AMQ_GLOBAL_MAX_SIZE
+  name: GLOBAL_MAX_SIZE
   value: 100 gb
 - description: Determines whether or not the broker will allow anonymous access, or
     require login
@@ -283,3 +289,15 @@ parameters:
   displayName: Broker Secret Files
   name: SECRET_FILES_NAME
   required: true
+- description: Maximum memory the container should be allotted
+  displayName: CONTAINER_MAX_MEMORY
+  name: CONTAINER_MAX_MEMORY
+  value: 5368709120
+- description: The ratio of maximum container memory defining the maximum memory used for Java Heap (Xmx)
+  displayName: JAVA_MAX_MEM_RATIO
+  name: JAVA_MAX_MEM_RATIO
+  value: 0
+- description: The ratio of maximum memory used for Java Heap (Xmx) defining the initial Java heap (Xms)
+  displayName: JAVA_INITIAL_MEM_RATIO
+  name: JAVA_INITIAL_MEM_RATIO
+  value: 0
