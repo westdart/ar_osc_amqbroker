@@ -12,7 +12,7 @@
 
 - name: Label Broker Objects with appgroup
   include_role:
-    name: roles/casl-ansible/roles/openshift-labels
+    name: casl-ansible/roles/openshift-labels
   vars:
     label:            "appgroup={{ ar_osc_amqbroker_name }}"
     target_object:    "{{ ar_osc_amqbroker_config_label.object }}"
@@ -24,7 +24,7 @@
 
 - name: Label Broker Objects with app
   include_role:
-    name: roles/casl-ansible/roles/openshift-labels
+    name: casl-ansible/roles/openshift-labels
   vars:
     label:            "app={{ ar_osc_amqbroker_name }}-broker"
     target_object:    "{{ ar_osc_amqbroker_config_label.object }}"
