@@ -153,6 +153,9 @@ under the License.
             <auto-create-jms-topics>true</auto-create-jms-topics>
             <send-to-dla-on-no-route>{{ ar_osc_amqbroker_instance.sendToDLAOnNoRoute }}</send-to-dla-on-no-route>
          </address-setting>
+         <address-setting match="gateway.messageRequest">
+            <max-delivery-attempts>1</max-delivery-attempts>
+         </address-setting>
       </address-settings>
       <addresses>
          <address name="DLQ">
@@ -208,6 +211,12 @@ under the License.
          <address name="mjdi_unknown_category">
             <anycast>
                <queue name="mjdi_unknown_category"><durable>true</durable></queue>
+            </anycast>
+         </address>
+
+         <address name="gateway.messageRequest">
+            <anycast>
+               <queue name="gateway.messageRequest"><durable>true</durable></queue>
             </anycast>
          </address>
 

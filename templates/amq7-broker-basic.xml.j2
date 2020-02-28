@@ -153,6 +153,9 @@ under the License.
             <auto-create-jms-topics>true</auto-create-jms-topics>
             <send-to-dla-on-no-route>{{ ar_osc_amqbroker_instance.sendToDLAOnNoRoute }}</send-to-dla-on-no-route>
          </address-setting>
+         <address-setting match="gateway.messageRequest">
+            <max-delivery-attempts>1</max-delivery-attempts>
+         </address-setting>
       </address-settings>
       <addresses>
          <address name="DLQ">
@@ -211,6 +214,12 @@ under the License.
             </anycast>
          </address>
 
+         <address name="gateway.messageRequest">
+            <anycast>
+               <queue name="gateway.messageRequest" />
+            </anycast>
+         </address>
+
          <!-- Outgoing addresses -->
          {% set query = "[?name!=`" + ar_osc_amqbroker_name + "`].incomingAddressList " %}
          {% for addr in app_instances | json_query(query) | flatten %}
@@ -252,7 +261,7 @@ under the License.
 
       <!-- <broker-plugins>
          <broker-plugin class-name="org.apache.activemq.artemis.core.server.plugin.impl.LoggingActiveMQServerPlugin">
-            <property key="LOG_ALL_EVENTS" value="false" />
+            <property key="LOG_ALL_EVENTS" value="true" />
             <property key="LOG_CONNECTION_EVENTS" value="true"/>
             <property key="LOG_SESSION_EVENTS" value="true"/>
             <property key="LOG_CONSUMER_EVENTS" value="true"/>
