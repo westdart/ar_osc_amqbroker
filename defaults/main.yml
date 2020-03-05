@@ -22,8 +22,8 @@ _ar_osc_amqbroker_pvc: "{{ ar_osc_amqbroker_instance.amqbroker_pvc | default(ar_
 ar_osc_amqbroker_openshift_login_url: "{{ ar_osc_amqbroker_instance['oc_login_url'] | default(oc_login_url) }}"
 
 ar_osc_amqbroker_container_max_memory: "{{ ar_osc_amqbroker_instance.container_max_mem | default(container_max_mem) | default(5368709120) }}"
-ar_osc_amqbroker_java_max_memory_ratio: "{{ ar_osc_amqbroker_instance.java_max_mem_ratio | default(java_max_mem_ratio) | default(50) }}"
-ar_osc_amqbroker_java_initial_memory_ratio: "{{ ar_osc_amqbroker_instance.java_initial_mem_ratio | default(java_initial_mem_ratio) | default(30) }}"
+ar_osc_amqbroker_java_max_memory_ratio: "{{ ar_osc_amqbroker_instance.java_max_mem_ratio | default(java_max_mem_ratio) | default(0) }}"
+ar_osc_amqbroker_java_initial_memory_ratio: "{{ ar_osc_amqbroker_instance.java_initial_mem_ratio | default(java_initial_mem_ratio) | default(0) }}"
 # Set default GLOBAL_MAX_SIZE to a 5th of Xmx (recommended in doc https://activemq.apache.org/components/artemis/documentation/2.1.0/perf-tuning.html)
 ar_osc_amqbroker_default_global_max_size: "{{ ((((ar_osc_amqbroker_container_max_memory | int * ar_osc_amqbroker_java_max_memory_ratio | int) / (100 * 1048576)) / 5) * 1048576) | int | abs }}"
 ar_osc_amqbroker_global_max_size: "{{ ar_osc_amqbroker_instance.global_max_size | default(global_max_size) | default(ar_osc_amqbroker_default_global_max_size) }}"
