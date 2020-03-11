@@ -1,5 +1,5 @@
 ---
-- name: Seed OpenShift
+- name: Apply OpenShift changes
   include_role:
     name: ar_os_seed
     tasks_from: apply
