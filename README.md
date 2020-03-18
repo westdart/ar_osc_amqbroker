@@ -1,10 +1,5 @@
 # ar_osc_amqbroker
-Ansible Role for OpenShift Config targeting the AMQ Broker application
-
-## amqbroker_config
-
-Generate the config files required to build out AMQ Broker 
-nodes
+Ansible Role for OpenShift deployment of the AMQ Broker application
 
 ## Requirements
 
@@ -32,13 +27,14 @@ The structure is:
   {
     name: <the name>,
     namespace: <the namespace>,
+    amqbroker_image: <the image>, # Optional, can be defined globally
     incomingAddressList: [<list of queues where this broker is the terminus>],
     sendToDLAOnNoRoute: '<true|false>',
     broker_node_port: <node-port>, # Optional - for direct connection to the broker from outside the cluster
   }
 ```
 
-For user / role pairs the structure is:
+For user / role pairs defined in the 'ar_osc_amqbroker_user_roles' variable, the structure is:
 ```
   [
     { name: "name1", role: "user" },
@@ -55,26 +51,47 @@ with those provided in the secrets provided in the key/value form:
 <username>=<password>
 
 ### Defaults
-| Variable                      | Description                             | Default                   |
-| --------                      | -----------                             | -------                   |
-| ar_osc_amqbroker_k8s_template | The Broker application template         | 'amq-broker-72-basic.yml' |
-| ar_osc_amqbroker_config_dest  | Area in which to generate config        | '/tmp'                    |
-| ar_osc_amqbroker_xml_template | The template to generate amq xml config | 'amq7-template.xml.j2'    |
+| Variable                                   | Description                                                                | Default                                                                                                                                                                                 |
+| --------                                   | -----------                                                                | -------                                                                                                                                                                                 |
+| ar_osc_amqbroker_image                     | The full name for the docker image to use                                  | 'amqbroker_image' taken from the 'ar_osc_amqbroker_instance' or global ansible variable namespace                                                                                       |
+| ar_osc_amqbroker_k8s_template              | The Broker application kubernetes template                                 | 'amq-broker-72-basic.yml'                                                                                                                                                               |
+| ar_osc_amqbroker_config_dest               | Area in which to generate config                                           | '/tmp'                                                                                                                                                                                  |
+| ar_osc_amqbroker_xml_template              | The template to generate amq xml config                                    | 'amq7-template.xml.j2'                                                                                                                                                                  |
+| ar_osc_amqbroker_pvc                       | Definition for the storage to be used by the broker                        | 1Gi mounted at '/opt/amq/data' with ;ReadWriteOnce' access mode                                                                                                                         |
+| ar_osc_amqbroker_container_max_memory      | The maximum memory limit for the container                                 | 'container_max_mem' taken either from the 'ar_osc_amqbroker_instance' or global ansible variable namespace, otherwise '5G'                                                              |
+| ar_osc_amqbroker_java_max_memory_ratio     | Ratio of maximum container memory defining the maximum for Java ('Xmx')    | 'java_max_mem_ratio' taken either from the 'ar_osc_amqbroker_instance' or global ansible variable namespace, otherwise '0' (ensuring that memory params are not specified for Java)     |
+| ar_osc_amqbroker_java_initial_memory_ratio | Ratio of maximum Java memory ('Xmx') defining the minimum for Java ('Xms') | 'java_initial_mem_ratio' taken either from the 'ar_osc_amqbroker_instance' or global ansible variable namespace, otherwise '0' (ensuring that memory params are not specified for Java) |
+| ar_osc_amqbroker_global_max_size           | Limit of amount of memory the Broker can use before it starts paging       | 'global_max_size' taken either from the 'ar_osc_amqbroker_instance' or global ansible variable namespace, otherwise 'ar_osc_amqbroker_default_global_max_size'                          |
+| ar_osc_amqbroker_default_global_max_size   | Default for 'ar_osc_amqbroker_global_max_size'                             | A 5th of 'Xmx', i.e. ((ar_osc_amqbroker_container_max_memory * ar_osc_amqbroker_java_max_memory_ratio ) / (100 * 5))                                                                    |
+| ar_osc_amqbroker_openshift_login_url       | The Openshift cluster to connect to                                        | 'oc_login_url' taken either from the 'ar_osc_amqbroker_instance' or global ansible variable namespace                                                                                   |
 
+For the 'ar_osc_amqbroker_pvc' variable, the structure is:
+```
+  {
+    accessModes: <List of modes to assign to this pvc>,
+    size: '<Size required by the pvc',
+    mountPath: '<mount path for the pvc (default: /opt/amq/data)>',
+    storageClass: '<optional: some storage class>',
+    volumeName: '<optional: some name>',
+    name: '<optional: the PVC name>',
+    oc_login_url: "<optional: The Openshift management endpoint URL>"
+  }
+```
 
 ### Globals
 The following are variable used within the role:
 
-| Variable           | Description                    | Default         |
-| --------           | -----------                    | -------         |
-| amqbroker_image    | The AMQ Broker Image           | None            |
-| amqbroker_image_ns | The AMQ Broker Image Namespace | 'openshift'     |
-| amqbroker_data_dir | The AMQ Broker data directory  | '/opt/amq/data' |
+| Variable           | Description                                                                          | Default         |
+| --------           | -----------                                                                          | -------         |
+| amqbroker_image    | The AMQ Broker Image                                                                 | None            |
+| amqbroker_data_dir | The AMQ Broker data directory                                                        | '/opt/amq/data' |
+| oc_login_url       | The Openshift management endpoint URL (Can also be provided as an instance variable) | None            |
 
 
 ## Dependencies
-
-- openshift-applier
+- ar_os_common
+- ar_os_seed
+- casl-ansible/roles/openshift-labels
 
 ## Example Playbook
 
@@ -87,6 +104,7 @@ To create AMQ Broker:
       include_role:
         name: ar_osc_amqbroker
       vars:
+        ar_osc_amqbroker_image:           "docker-registry-default.t2.training.local/imgns/amq-broker-72-openshift:1.2"
         ar_osc_amqbroker_ns:              "my-namespace"
         ar_osc_amqbroker_name:            "my-broker"
         ar_osc_amqbroker_config_dest:     "/tmp/my-broker"
