@@ -256,15 +256,7 @@ parameters:
   displayName: AMQ Multicast Prefix
   name: AMQ_MULTICAST_PREFIX
   required: false
-- description: Namespace in which the ImageStreams for Red Hat Middleware images are
-    installed. These ImageStreams are normally installed in the openshift namespace.
-    You should only need to modify this if you've installed the ImageStreams in a
-    different namespace/project.
-  displayName: ImageStream Namespace
-  name: IMAGE_STREAM_NAMESPACE
-  required: true
-  value: openshift
-- description: Broker Image
+- description: The name of the AMQ Broker image to use. This should be the complete docker reference to the image required
   displayName: Image
   name: IMAGE
   required: true  

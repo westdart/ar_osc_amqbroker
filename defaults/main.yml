@@ -1,6 +1,9 @@
 ---
 ar_osc_amqbroker_k8s_template: "amq-broker-72-basic.yml"
 ar_osc_amqbroker_config_dest: '/tmp'
+
+ar_osc_amqbroker_image: "{{ ar_osc_amqbroker_instance.amqbroker_image | default(amqbroker_image) }}"
+
 ar_osc_amqbroker_xml_template: "amq7-broker-basic.xml.j2"
 ar_osc_amqbroker_pvc: {
   accessModes: ['ReadWriteOnce'],
@@ -25,7 +28,7 @@ ar_osc_amqbroker_container_max_memory: "{{ ar_osc_amqbroker_instance.container_m
 ar_osc_amqbroker_java_max_memory_ratio: "{{ ar_osc_amqbroker_instance.java_max_mem_ratio | default(java_max_mem_ratio) | default(0) }}"
 ar_osc_amqbroker_java_initial_memory_ratio: "{{ ar_osc_amqbroker_instance.java_initial_mem_ratio | default(java_initial_mem_ratio) | default(0) }}"
 # Set default GLOBAL_MAX_SIZE to a 5th of Xmx (recommended in doc https://activemq.apache.org/components/artemis/documentation/2.1.0/perf-tuning.html)
-ar_osc_amqbroker_default_global_max_size: "{{ ((((ar_osc_amqbroker_container_max_memory | int * ar_osc_amqbroker_java_max_memory_ratio | int) / (100 * 1048576)) / 5) * 1048576) | int | abs }}"
+ar_osc_amqbroker_default_global_max_size: "{{ ((ar_osc_amqbroker_container_max_memory | int * ar_osc_amqbroker_java_max_memory_ratio | int) / (100 * 5)) | int | abs }}"
 ar_osc_amqbroker_global_max_size: "{{ ar_osc_amqbroker_instance.global_max_size | default(global_max_size) | default(ar_osc_amqbroker_default_global_max_size) }}"
 
 _ar_osc_amqbroker_openshift_content: [
@@ -39,8 +42,7 @@ _ar_osc_amqbroker_openshift_content: [
       AMQ_NAME: "{{ ar_osc_amqbroker_instance | application_name }}",
       BROKER_CONFIG_MAP: "{{ ar_osc_amqbroker_instance | config_map_name }}",
       SECRET_FILES_NAME: "{{ ar_osc_amqbroker_name }}-broker-secret-files",
-      IMAGE: "{{ ar_osc_amqbroker_instance.amqbroker_image | default(amqbroker_image) }}",
-      IMAGE_STREAM_NAMESPACE: "{{ ar_osc_amqbroker_instance.amqbroker_image_ns | default(amqbroker_image_ns) }}",
+      IMAGE: "{{ ar_osc_amqbroker_image }}",
       APP_GROUP: "{{ ar_osc_amqbroker_name }}",
       APP_NAME: "{{ ar_osc_amqbroker_instance | application_name }}",
       AMQ_SECRETS: "{{ ar_osc_amqbroker_instance | secrets_name }}",

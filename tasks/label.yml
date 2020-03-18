@@ -5,9 +5,9 @@
 - set_fact:
     ar_osc_amqbroker_config_labels: [
       {"object": "{{ _ar_osc_amqbroker_k8s_deployment_type }}", "name": "{{ ar_osc_amqbroker_instance | application_name }}-amq"},
-      {"object": "Secret",                                "name": "{{ ar_osc_amqbroker_instance | secrets_name }}"},
-      {"object": "Secret",                                "name": "{{ ar_osc_amqbroker_name }}-broker-secret-files"},
-      {"object": "ConfigMap",                             "name": "{{ ar_osc_amqbroker_instance | config_map_name }}"},
+      {"object": "Secret",                                      "name": "{{ ar_osc_amqbroker_instance | secrets_name }}"},
+      {"object": "Secret",                                      "name": "{{ ar_osc_amqbroker_name }}-broker-secret-files"},
+      {"object": "ConfigMap",                                   "name": "{{ ar_osc_amqbroker_instance | config_map_name }}"},
     ]
 
 - name: Label Broker Objects with appgroup
