@@ -20,11 +20,9 @@ def application_name(app_instance):
     return name + "-broker"
 
 def config_map_name(app_instance):
-    name = app_common_name(app_instance)
     return application_name(app_instance) + "-config-map"
 
 def secrets_name(app_instance):
-    name = app_common_name(app_instance)
     return application_name(app_instance) + "-secrets"
 
 class FilterModule(object):

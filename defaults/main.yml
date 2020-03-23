@@ -33,7 +33,7 @@ ar_osc_amqbroker_global_max_size: "{{ ar_osc_amqbroker_instance.global_max_size 
 
 _ar_osc_amqbroker_openshift_content: [
   { name: "{{ ar_osc_amqbroker_instance | secrets_name }}",     template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-secret.yml" },
-  { name: "{{ ar_osc_amqbroker_name }}-broker-secret-files",    template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-files-secret.yml"},
+  { name: "{{ ar_osc_amqbroker_name }}-broker-secret-files",    template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-secret-files.yml"},
   { name: "{{ ar_osc_amqbroker_instance | config_map_name }}",  template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-cm.yml" },
   { name: "{{ ar_osc_amqbroker_instance | application_name }}", template: "{{ _ar_osc_amqbroker_config_dest_templates }}/amq-broker-k8s-template.yml",
     params: {
