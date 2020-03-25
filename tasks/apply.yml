@@ -4,4 +4,5 @@
     name: ar_os_seed
     tasks_from: apply
   vars:
+    ar_os_seed_config_dest: "{{ _ar_osc_amqbroker_config_dest }}"
     ar_os_seed_openshift_login_url: "{{ ar_osc_amqbroker_openshift_login_url }}"
